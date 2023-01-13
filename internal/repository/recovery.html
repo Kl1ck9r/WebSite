@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8" />
+</head>
+
+<body>
+  <div>
+    <h1>Forgot your password ?</h1>
+    <form method="POST" action="/recovery/password">
+      <label><b>Enter your password</b></label><input name="password" placeholder="Enter new Password" type="password" value=""
+        required />
+      <label><b>Enter your linked email</b></label><input name="address" placeholder="Enter email" type="text" value=""
+        required />
+      <input class="button1" type="submit" value="submit" />
+    </form>
+  </div>
+</body>
+
+</html>
+
+
+<style>
+  body {
+    background-color: lightblue;
+
+  }
+
+  form {
+    border: 3px solid #f1f1f1;
+  }
+
+  input {
+    display: inline-block;
+    border: 1px solid #ccc;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 12px 20px;
+    margin: 8px 0;
+  }
+
+  h1 {
+    text-align: center;
+    color: #4CAF50
+  }
+
+  .button1 {
+    background-color: #4CAF50;
+    color: white;
+    padding: 14px 20px;
+    margin: 8px 0;
+    border: none;
+    cursor: pointer;
+    width: 100%;
+  }
+</style>

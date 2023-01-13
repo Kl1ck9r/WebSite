@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8" />
+</head>
+
+<body>
+  <div>
+    <img src="https://html5css.ru/howto/img_avatar2.png" alt="Avatar" class="avatar">
+    <form method="POST" action="/login/view">
+      <label><b>Name</b></label><input name="username" placeholder="Enter your username" type="text" value=""
+        required />
+      <label><b>Password</b></label><input name="password" placeholder="Enter your password" type="password" value=""
+        required />
+      <label><b>Address</b></label><input name="address" placeholder="Enter Your email" type="text" value="" required />
+      <input class="button1" type="submit" value="submit" />
+    </form>
+
+    <label>
+      <input type="checkbox" checked="checked" name="remember">Remember me
+    </label>
+    <span>Forgot <a href="http://127.0.0.1:8010/recovery/password">password?</a></span>
+
+  </div>
+
+
+</body>
+
+</html>
+
+<style>
+  body {
+    background-color: grey;
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  form {
+    border: 3px solid #f1f1f1;
+  }
+
+  input {
+    display: inline-block;
+    border: 1px solid #ccc;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 12px 20px;
+    margin: 8px 0;
+  }
+
+  h1 {
+    color: whitesmoke;
+
+  }
+
+  .button1 {
+    background-color: #4CAF50;
+    color: white;
+    padding: 14px 20px;
+    margin: 8px 0;
+    border: none;
+    cursor: pointer;
+    width: 100%;
+  }
+
+  img.avatar {
+    width: 40%;
+    border-radius: 50%;
+    text-align: center;
+    margin: 24px 0 12px 0;
+  }
+</style>

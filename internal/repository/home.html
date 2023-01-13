@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title> Notes </title>
+</head>
+
+<body>
+	<div class="container">
+        <h1> List affairs </h1>
+        <form method="POST">
+            <input class="form-control" type="text" name="note" id ="note" placeholder="Enter note text ">
+            <input class="form-control" type="number" name="id" id ="id" placeholder="Enter id note ">
+         
+            <button class="btn-danger" type="submit" name="send"><b>Add</b></button>
+            <button class="btn-danger" type="submit" name="send"><b>Delete</b></button>
+            <button class="btn-danger" type="button" name="send"><b>Show Notes</b></button>
+        </form>
+    </div>
+
+</body>
+
+<style>
+.container {
+    margin-top: 50px;
+    width: 50%!important;
+}
+
+form {
+    background: #232324;
+    border: 3px solid #363636;
+    border-radius: 10px;
+    padding: 20px 10px;
+}
+
+#list {
+    width: 60%;
+    float: left; 
+    margin-right: 5%; 
+}
+
+.form-control{
+    width: 50%;
+    padding: 10px;
+}
+
+.btn-danger{
+    border: none;
+    background-color: inherit;
+    padding: 14px 28px;
+    font-size: 16px;
+    cursor: pointer;
+    display: inline-block;
+}
+.btn-danger:hover {background: blue}
+
+h1 {
+    color:saddlebrown;
+} 
+</style>
+
+</html>
+
+
+
