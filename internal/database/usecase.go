@@ -24,7 +24,7 @@ func WebsiteAccess(ent *entities.DataUser) bool {
 	err = Db.Ping()
 	CheckError(err, "Failed to connect db")
 
-	var IsTrue bool
+	var IsTrue bool = false
 
 	storage := GetDataDB()
 
@@ -45,10 +45,7 @@ func ExistsUser(ent *entities.DataUser) bool {
 	CheckError(err, "Failed to connect db")
 
 	rows, err := Db.Query("SELECT email FROM storage")
-
-	if err != nil {
-		errors.Wrap(err, "Failed to handle request db")
-	}
+	CheckError(err, "Failed to hanld request")
 
 	defer rows.Close()
 
@@ -62,23 +59,19 @@ func ExistsUser(ent *entities.DataUser) bool {
 		storage = append(storage, p)
 	}
 
-	var IsTrue bool
+	var IsTrue bool = false
 
 	for _, rng := range storage {
 		if rng.Email == ent.Email {
-			//ChangePassword(ent)
 			IsTrue = true
 		} else {
-			//log.Fatal("The email address not found database " +
-			//"for password recovery an email address for db must be exists")
-			//	IsTrue = false
+			// need
 		}
 	}
 
 	fmt.Println(ent.Email)
 
 	return IsTrue
-
 }
 
 func ChangePassword(ent *entities.DataUser) {
@@ -88,7 +81,7 @@ func ChangePassword(ent *entities.DataUser) {
 	err = Db.Ping()
 	CheckError(err, "Failed to connect db")
 
-	rows, err := Db.Query("SELECT password,email FROM notesdb")
+	rows, err := Db.Query("SELECT password,email FROM storage")
 	CheckError(err, "Failed to handle request")
 
 	defer rows.Close()
@@ -120,7 +113,7 @@ func GetDataDB() []entities.DataUser {
 	err = Db.Ping()
 	CheckError(err, "Failed to connect request")
 
-	rows, err := Db.Query("SELECT * FROM storage")
+	rows, err := Db.Query("SELECT username,password,email FROM storage")
 	CheckError(err, "Failed to handle request")
 
 	defer rows.Close()
@@ -140,6 +133,30 @@ func GetDataDB() []entities.DataUser {
 	}
 
 	return storage
+}
+
+func GetByUserName() []string {
+	Db, err := sql.Open("postgres", Psqlconnect)
+	CheckError(err, "Failed to open request")
+
+	err = Db.Ping()
+	CheckError(err, "Failed to connect request")
+
+	rows, err := Db.Query("SELECT username FROM storage")
+	CheckError(err, "Faield to handle request db")
+
+	defer rows.Close()
+
+	username := []string{}
+	var names string
+
+	for rows.Next() {
+		err = rows.Scan(&names)
+		CheckError(err, "Failed to copy to variable")
+		username = append(username, names)
+	}
+
+	return username
 }
 
 func CheckError(err error, msg string) {

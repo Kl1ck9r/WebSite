@@ -14,7 +14,6 @@ const(
 
 func main() {
 
-
 	mux := http.NewServeMux()
 	
 	mux.HandleFunc("/registration/view", server.PageRegistration)
