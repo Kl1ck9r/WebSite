@@ -5,19 +5,21 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"testing"
 
 	"github.com/cmd/internal/entities"
 	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
+	"github.com/stretchr/testify/assert"
 )
 
-func init() {
+func TestInit(t *testing.T) {
 	if err := godotenv.Load(".env"); err != nil {
-		log.Print("No .env file found")
+		assert.Nil(t, err)
 	}
 }
 
-func ConnectDB() (*sql.DB, error) {
+func TestConnectDB(t *testing.T) {
 
 	psqlConnect := entities.DataBase{
 		Host:     os.Getenv("DB_HOST"),
@@ -32,15 +34,14 @@ func ConnectDB() (*sql.DB, error) {
 		psqlConnect.Host, psqlConnect.Port, psqlConnect.UserName, psqlConnect.Password, psqlConnect.DBName, psqlConnect.SSLMode))
 
 	if err != nil {
-		log.Fatal("Failed to open database",err)
+		log.Fatal("Failed top open database", err)
 	}
+
+	defer db.Close()
 
 	err = db.Ping()
 
 	if err != nil {
-		log.Printf("ERROR CONNECTING database: \n%v", err)
-		return nil, err
+		log.Fatal("Failed to connect to database", err)
 	}
-
-	return db, nil
 }

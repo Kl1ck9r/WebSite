@@ -12,7 +12,7 @@ func TestInsertDB(t *testing.T) {
 	db, mock, err := sqlmock.New()
 
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal("Failed to connect sqlmock database",err)
 	}
 
 	defer db.Close()
@@ -22,7 +22,7 @@ func TestInsertDB(t *testing.T) {
 	st.Password = "Password12345"
 	st.UserName = "User-Agent"
 
-	mock.ExpectExec("INSERT INTO storage password,").WithArgs(st.Password, st.UserName, st.Email).WillReturnResult(sqlmock.NewResult(1, 1))
+	mock.ExpectExec("INSERT INTO storage password,username,email").WithArgs(st.Password, st.UserName, st.Email).WillReturnResult(sqlmock.NewResult(1, 1))
 	mock.ExpectCommit()
 
 	check, err := utils.ConnectDB()
@@ -31,7 +31,7 @@ func TestInsertDB(t *testing.T) {
 		log.Fatal(err)
 	}
 
-	check.Close()
+	defer check.Close()
 
 	if err = InsertDB(&st); err != nil {
 		t.Errorf("error was not expected while updating stats: %s", err)
@@ -42,8 +42,9 @@ func TestDeleteDB(t *testing.T) {
 	db, mock, err := sqlmock.New()
 
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal("Failed to connect sqlmock database",err)
 	}
+
 	defer db.Close()
 
 	var st entities.DataUser
@@ -57,7 +58,7 @@ func TestDeleteDB(t *testing.T) {
 		log.Fatal(err)
 	}
 
-	check.Close()
+	defer check.Close()
 
 	if err = DeleteDB(&st); err != nil {
 		t.Errorf("error was not expected while updating stats: %s", err)
@@ -68,7 +69,7 @@ func TestUpdateDB(t *testing.T) {
 	db,mock,err:=sqlmock.New()
 
 	if err!=nil{
-		log.Fatal(err)
+		log.Fatal("Failed to connect sqlmock database",err)
 	}
 	
 	db.Close()
@@ -91,7 +92,7 @@ func TestFindUserBy(t *testing.T) {
 		log.Fatal(err)
 	}
 
-	db.Close()
+	defer db.Close()
 
 	var st entities.DataUser
 	st.ID = "15"
@@ -103,7 +104,7 @@ func TestFindUserBy(t *testing.T) {
 	if err != nil {
 		log.Fatal(err)
 	}
-	check.Close()
+	defer check.Close()
 
 	if err = FindUserByID(&st); err != nil {
 		t.Errorf("error was not expected while updating stats: %s", err)

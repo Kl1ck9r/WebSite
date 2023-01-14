@@ -22,4 +22,13 @@ type Search struct {
 	ID string `json:"ID"`
 }
 
+type DataBase struct{
+	Host string 
+	Port string 
+	UserName string 
+	Password string 
+	DBName string 
+	SSLMode string 
+}
+
 

@@ -44,8 +44,7 @@ func PageLogin(w http.ResponseWriter, r *http.Request) {
 			Email:    r.FormValue("address"),
 		}
 
-		if forms.IsEmail(datastorage.Email) && forms.IsPassword(datastorage.Password) &&
-			forms.IsUsername(datastorage.UserName) {
+		if forms.IsEmail(datastorage.Email) && forms.IsPassword(datastorage.Password){
 
 			if usecase.WebsiteAccess(&datastorage) {
 				http.Redirect(w, r, "/welcome/view", http.StatusSeeOther)

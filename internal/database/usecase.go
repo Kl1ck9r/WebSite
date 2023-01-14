@@ -31,6 +31,8 @@ func WebsiteAccess(ent *entities.DataUser) bool {
 func ExistsUser(ent *entities.DataUser) bool {
 	Db, err := utils.ConnectDB()
 	CheckError(err, "Failed to open db")
+	
+	defer Db.Close()
 
 	rows, err := Db.Query("SELECT email FROM storage")
 	CheckError(err, "Failed to hanld request")
@@ -62,6 +64,8 @@ func ChangePassword(ent *entities.DataUser) {
 	Db, err := utils.ConnectDB()
 	CheckError(err, "Failed to open  db")
 
+	defer Db.Close()
+
 	rows, err := Db.Query("SELECT password,email FROM storage")
 	CheckError(err, "Failed to handle request")
 
@@ -88,6 +92,8 @@ func ChangePassword(ent *entities.DataUser) {
 func GetDataDB() []entities.DataUser {
 	Db, err := utils.ConnectDB()
 	CheckError(err, "Failed to open request")
+
+	defer Db.Close()
 
 	rows, err := Db.Query("SELECT username,password,email FROM storage")
 	CheckError(err, "Failed to handle request")

@@ -3,19 +3,13 @@ package main
 import (
 	"github.com/cmd/internal/repository"
 	//"github.com/cmd/internal/database/storage"
-	//"github.com/cmd/internal/entities"
+	//"github.com/cmd/internal/utils"
 	"log"
 	"net/http"
 	"time"
 )
 
 func main() {
-
-	//p:=entities.DataUser{
-	//	ID : "19",
-	//}
-	
-	//storage.DeleteDB(&p)
 
 	mux := http.NewServeMux()
 
