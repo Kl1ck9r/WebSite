@@ -5,8 +5,8 @@ type DataUser struct{
 	UserName string `json:"UserName"`
 	Password string `json:"Password"`
 	Email string    `json:"Email"`
+	ID string 		`json:"ID"`
 }
-
 
 type Notes struct{
 	Note string `json:"Note"`

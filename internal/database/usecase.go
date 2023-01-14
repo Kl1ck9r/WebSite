@@ -7,23 +7,14 @@ import (
 
 	dbstorage "github.com/cmd/internal/database/storage"
 	"github.com/cmd/internal/entities"
+	"github.com/cmd/internal/utils"
 	_ "github.com/lib/pq"
 	"github.com/pkg/errors"
 )
 
 var Db *sql.DB
 
-const (
-	Psqlconnect = "user=postgres dbname=postgres password=Ruslan5655 host=localhost sslmode=disable"
-)
-
 func WebsiteAccess(ent *entities.DataUser) bool {
-	Db, err := sql.Open("postgres", Psqlconnect)
-	CheckError(err, "Failed to open  db")
-
-	err = Db.Ping()
-	CheckError(err, "Failed to connect db")
-
 	var IsTrue bool = false
 
 	storage := GetDataDB()
@@ -38,11 +29,8 @@ func WebsiteAccess(ent *entities.DataUser) bool {
 }
 
 func ExistsUser(ent *entities.DataUser) bool {
-	Db, err := sql.Open("postgres", Psqlconnect)
+	Db, err := utils.ConnectDB()
 	CheckError(err, "Failed to open db")
-
-	err = Db.Ping()
-	CheckError(err, "Failed to connect db")
 
 	rows, err := Db.Query("SELECT email FROM storage")
 	CheckError(err, "Failed to hanld request")
@@ -64,22 +52,15 @@ func ExistsUser(ent *entities.DataUser) bool {
 	for _, rng := range storage {
 		if rng.Email == ent.Email {
 			IsTrue = true
-		} else {
-			// need
 		}
 	}
-
-	fmt.Println(ent.Email)
 
 	return IsTrue
 }
 
 func ChangePassword(ent *entities.DataUser) {
-	Db, err := sql.Open("postgres", Psqlconnect)
+	Db, err := utils.ConnectDB()
 	CheckError(err, "Failed to open  db")
-
-	err = Db.Ping()
-	CheckError(err, "Failed to connect db")
 
 	rows, err := Db.Query("SELECT password,email FROM storage")
 	CheckError(err, "Failed to handle request")
@@ -99,19 +80,14 @@ func ChangePassword(ent *entities.DataUser) {
 		if rng.Password == ent.Password && rng.Email == ent.Email {
 			log.Fatal("The new password matches the old password")
 		} else {
-			if dbstorage.UpdateDB(&p) {
-				fmt.Println("Password success changed !")
-			}
+			 dbstorage.UpdateDB(&p)
 		}
 	}
 }
 
 func GetDataDB() []entities.DataUser {
-	Db, err := sql.Open("postgres", Psqlconnect)
+	Db, err := utils.ConnectDB()
 	CheckError(err, "Failed to open request")
-
-	err = Db.Ping()
-	CheckError(err, "Failed to connect request")
 
 	rows, err := Db.Query("SELECT username,password,email FROM storage")
 	CheckError(err, "Failed to handle request")
@@ -136,11 +112,8 @@ func GetDataDB() []entities.DataUser {
 }
 
 func GetByUserName() []string {
-	Db, err := sql.Open("postgres", Psqlconnect)
+	Db, err := utils.ConnectDB()
 	CheckError(err, "Failed to open request")
-
-	err = Db.Ping()
-	CheckError(err, "Failed to connect request")
 
 	rows, err := Db.Query("SELECT username FROM storage")
 	CheckError(err, "Faield to handle request db")

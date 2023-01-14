@@ -17,10 +17,10 @@ import (
 func PageLogin(w http.ResponseWriter, r *http.Request) {
 
 	if r.URL.Path != "/login/view" {
-		http.Error(w, "Invalid URL Address", http.StatusRequestURITooLong)
+			http.Error(w, "Invalid URL Address", http.StatusRequestURITooLong)
 	}
 
-	file, err := os.Open("./internal/templates/auth/login.html")
+	file, err := os.Open("./templates/auth/login.html")
 	CheckError(err, "Failed to open file")
 
 	read, err := ioutil.ReadAll(file)
@@ -48,13 +48,13 @@ func PageLogin(w http.ResponseWriter, r *http.Request) {
 			forms.IsUsername(datastorage.UserName) {
 
 			if usecase.WebsiteAccess(&datastorage) {
-				http.Redirect(w, r, "/welcome/view", http.StatusFound)
+				http.Redirect(w, r, "/welcome/view", http.StatusSeeOther)
 			} else {
 				http.Error(w, "Login details are incorrect", http.StatusUnauthorized)
 			}
 
 		} else {
-			fmt.Println("Invalid input data! ")
+			fmt.Fprintf(w,"Invalid input data!")
 		}
 
 	default:
@@ -69,7 +69,7 @@ func PageRegistration(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Invalid URL Address", http.StatusRequestURITooLong)
 	}
 
-	fl, err := os.Open("./internal/templates/auth/signup.html")
+	fl, err := os.Open("./templates/auth/signup.html")
 	CheckError(err, "Failed to open file")
 
 	read, err := ioutil.ReadAll(fl)
@@ -97,9 +97,10 @@ func PageRegistration(w http.ResponseWriter, r *http.Request) {
 			forms.IsUsername(datastorage.UserName) {
 
 			if usecase.ExistsUser(&datastorage) {
-				fmt.Printf("User with email exists already")
+				fmt.Fprintf(w,"User with so email exists already")
 			} else {
 				storage.InsertDB(&datastorage)
+				http.Redirect(w,r,"/login/view",http.StatusFound)
 			}
 		} else {
 			http.Error(w, "Login details are incorrect", http.StatusUnauthorized)
@@ -115,7 +116,7 @@ func PageResetPassword(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Invalid URL Address", http.StatusRequestURITooLong)
 	}
 
-	fl, err := os.Open("./internal/templates/recovery.html")
+	fl, err := os.Open("./templates/recovery.html")
 	CheckError(err, "Failed to open file")
 
 	defer fl.Close()
@@ -143,7 +144,7 @@ func PageResetPassword(w http.ResponseWriter, r *http.Request) {
 			if usecase.ExistsUser(&datastorage) {
 				usecase.ChangePassword(&datastorage)
 			} else {
-				fmt.Println("User doens't exist")
+				fmt.Fprintf(w,"User with so email doesn't exist")
 			}
 		} else {
 			http.Error(w, "Login details are incorrect", http.StatusUnauthorized)
@@ -155,11 +156,12 @@ func PageResetPassword(w http.ResponseWriter, r *http.Request) {
 }
 
 func PageMain(w http.ResponseWriter, r *http.Request) {
+
 	if r.URL.Path != "/welcome/view" {
 		http.Error(w, "Invalid URL Address", http.StatusRequestURITooLong)
 	}
 
-	fl, err := os.Open("./internal/templates/home.html")
+	fl, err := os.Open("./templates/home.html")
 	CheckError(err, "Failed to open db")
 
 	defer fl.Close()
@@ -195,6 +197,8 @@ func ErrorHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Invalid URL Address", http.StatusRequestURITooLong)
 	}
 
+
+	// need to end 
 	w.Write([]byte("Error"))
 }
 

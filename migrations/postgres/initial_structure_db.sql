@@ -14,3 +14,6 @@ CREATE TABLE notes(
 );
 
 
+DROP TABLE notes
+DROP TABLE storage 
+
