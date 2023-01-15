@@ -60,7 +60,7 @@ func ExistsUser(ent *entities.DataUser) bool {
 	return IsTrue
 }
 
-func ChangePassword(ent *entities.DataUser) {
+func ChangePassword(ent *entities.DataUser) (err error) {
 	Db, err := utils.ConnectDB()
 	CheckError(err, "Failed to open  db")
 
@@ -84,9 +84,11 @@ func ChangePassword(ent *entities.DataUser) {
 		if rng.Password == ent.Password && rng.Email == ent.Email {
 			log.Fatal("The new password matches the old password")
 		} else {
-			 dbstorage.UpdateDB(&p)
+			 dbstorage.UpdateDB(Db,&p)
 		}
 	}
+
+	return 
 }
 
 func GetDataDB() []entities.DataUser {
@@ -117,7 +119,7 @@ func GetDataDB() []entities.DataUser {
 	return storage
 }
 
-func GetByUserName() []string {
+func GetByUserName() (sl []string,err error) {
 	Db, err := utils.ConnectDB()
 	CheckError(err, "Failed to open request")
 
@@ -135,7 +137,7 @@ func GetByUserName() []string {
 		username = append(username, names)
 	}
 
-	return username
+	return username,nil
 }
 
 func CheckError(err error, msg string) {

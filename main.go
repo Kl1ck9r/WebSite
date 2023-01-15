@@ -2,8 +2,6 @@ package main
 
 import (
 	"github.com/cmd/internal/repository"
-	//"github.com/cmd/internal/database/storage"
-	//"github.com/cmd/internal/utils"
 	"log"
 	"net/http"
 	"time"
@@ -13,13 +11,13 @@ func main() {
 
 	mux := http.NewServeMux()
 
-	mux.HandleFunc("/registration/view", server.PageRegistration)
+	mux.HandleFunc("page/registration", server.PageRegistration)
 
-	mux.HandleFunc("/login/view", server.PageLogin)
+	mux.HandleFunc("page/login", server.PageLogin)
 
-	mux.HandleFunc("/recovery/password", server.PageResetPassword)
+	mux.HandleFunc("page/reset/password", server.PageResetPassword)
 
-	mux.HandleFunc("/welcome/view", server.PageMain)
+	mux.HandleFunc("page/main", server.PageMain)
 
 	mux.HandleFunc("/page/error", server.ErrorHandler)
 

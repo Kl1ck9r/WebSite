@@ -11,7 +11,23 @@ import (
 
 var Db *sql.DB
 
-func InsertNoteDB(nt *entities.Notes) {
+func InsertNoteDB(db *sql.DB, nt *entities.Notes) (err error) {
+
+	tx, err := db.Begin()
+
+	if err != nil {
+		return
+	}
+
+	defer func() {
+		switch err {
+		case nil:
+			tx.Commit()
+		default:
+			tx.Rollback()
+		}
+	}()
+
 	Db, err := utils.ConnectDB()
 	CheckError(err, "Failed to open db")
 
@@ -20,9 +36,27 @@ func InsertNoteDB(nt *entities.Notes) {
 
 	_, err = Db.Exec(sqlInsert, nt.Note, nt.ID)
 	CheckError(err, "Failed to handle request db")
+
+	return
 }
 
-func DeleteNoteDB(nt *entities.Notes) {
+func DeleteNoteDB(db *sql.DB, nt *entities.Notes) (err error) {
+
+	tx, err := db.Begin()
+
+	if err != nil {
+		return
+	}
+
+	defer func() {
+		switch err {
+		case nil:
+			tx.Commit()
+		default:
+			tx.Rollback()
+		}
+	}()
+
 	Db, err := utils.ConnectDB()
 	CheckError(err, "Failed to open db")
 
@@ -30,9 +64,27 @@ func DeleteNoteDB(nt *entities.Notes) {
 
 	_, err = Db.Exec(sqlDelete, nt.ID)
 	CheckError(err, "Failed to handle request from db")
+
+	return
 }
 
-func UpdateNoteDB(nt *entities.Notes) {
+func UpdateNoteDB(db *sql.DB, nt *entities.Notes) (err error) {
+
+	tx, err := db.Begin()
+
+	if err != nil {
+		return
+	}
+
+	defer func() {
+		switch err {
+		case nil:
+			tx.Commit()
+		default:
+			tx.Rollback()
+		}
+	}()
+
 	Db, err := utils.ConnectDB()
 	CheckError(err, "Failed open db")
 
@@ -40,9 +92,27 @@ func UpdateNoteDB(nt *entities.Notes) {
 
 	_, err = Db.Exec(sqlUpdate, nt.Note, nt.ID)
 	CheckError(err, "Failed to handle request from db")
+
+	return
 }
 
-func FindRecordByID(ent *entities.Notes) {
+func FindRecordByID(db *sql.DB, ent *entities.Notes) (err error) {
+
+	tx, err := db.Begin()
+
+	if err != nil {
+		return
+	}
+
+	defer func() {
+		switch err {
+		case nil:
+			tx.Commit()
+		default:
+			tx.Rollback()
+		}
+	}()
+
 	Db, err := utils.ConnectDB()
 	CheckError(err, "Failed to open db")
 
@@ -50,6 +120,8 @@ func FindRecordByID(ent *entities.Notes) {
 
 	_, err = Db.Exec(sqlFind, ent.ID)
 	CheckError(err, "Failed to handle request to db")
+
+	return
 }
 
 func CheckError(err error, msg string) {

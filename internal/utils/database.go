@@ -11,7 +11,7 @@ import (
 	_ "github.com/lib/pq"
 )
 
-func init() {
+func Init() {
 	if err := godotenv.Load(".env"); err != nil {
 		log.Print("No .env file found")
 	}

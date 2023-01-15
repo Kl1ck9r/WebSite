@@ -9,7 +9,21 @@ import (
 
 var Db *sql.DB
 
-func InsertDB(ent *entities.DataUser) (err error) {
+func InsertDB(db *sql.DB, ent *entities.DataUser) (err error) {
+	
+	tx, err := db.Begin()
+	if err != nil {
+		return
+	}
+
+	defer func() {
+		switch err {
+		case nil:
+			err = tx.Commit()
+		default:
+			tx.Rollback()
+		}
+	}()
 
 	Db, err := utils.ConnectDB()
 	CheckDB(err)
@@ -25,8 +39,22 @@ func InsertDB(ent *entities.DataUser) (err error) {
 	return nil
 }
 
-func DeleteDB(ent *entities.DataUser) (err error) {
+func DeleteDB(db *sql.DB, ent *entities.DataUser) (err error) {
 
+	tx, err := db.Begin()
+
+	if err != nil {
+		return
+	}
+
+	defer func() {
+		switch err {
+		case nil:
+			err = tx.Commit()
+		default:
+			tx.Rollback()
+		}
+	}()
 	Db, err := utils.ConnectDB()
 	CheckDB(err)
 
@@ -38,10 +66,26 @@ func DeleteDB(ent *entities.DataUser) (err error) {
 	_, err = Db.Exec(sqlDelete, ent.ID)
 	CheckDB(err)
 
-	return 
+	return
 }
 
-func UpdateDB(ent *entities.DataUser) (err error) {
+func UpdateDB(db *sql.DB, ent *entities.DataUser) (err error) {
+
+	tx, err := db.Begin()
+
+	if err != nil {
+		return
+	}
+
+	defer func() {
+		switch err {
+		case nil:
+			tx.Commit()
+		default:
+			tx.Rollback()
+		}
+	}()
+
 	Db, err := utils.ConnectDB()
 	CheckDB(err)
 
@@ -50,10 +94,25 @@ func UpdateDB(ent *entities.DataUser) (err error) {
 	_, err = Db.Exec(sqlUpdate, ent.Password, ent.Email)
 
 	CheckDB(err)
-	return 
+	return
 }
 
-func FindUserByID(ent *entities.DataUser) (err error) {
+func FindUserByID(db *sql.DB, ent *entities.DataUser) (err error) {
+	tx, err := db.Begin()
+
+	if err != nil {
+		return
+	}
+
+	defer func() {
+		switch err {
+		case nil:
+			tx.Commit()
+		default:
+			tx.Rollback()
+		}
+	}()
+
 	Db, err := utils.ConnectDB()
 	CheckDB(err)
 
@@ -62,7 +121,7 @@ func FindUserByID(ent *entities.DataUser) (err error) {
 	_, err = Db.Exec(sqlFind, ent.ID)
 	CheckDB(err)
 
-	return 
+	return
 }
 
 func CheckDB(err error) {

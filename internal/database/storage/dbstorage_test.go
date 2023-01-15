@@ -22,6 +22,7 @@ func TestInsertDB(t *testing.T) {
 	st.Password = "Password12345"
 	st.UserName = "User-Agent"
 
+	mock.ExpectBegin()
 	mock.ExpectExec("INSERT INTO storage password,username,email").WithArgs(st.Password, st.UserName, st.Email).WillReturnResult(sqlmock.NewResult(1, 1))
 	mock.ExpectCommit()
 
@@ -33,7 +34,7 @@ func TestInsertDB(t *testing.T) {
 
 	defer check.Close()
 
-	if err = InsertDB(&st); err != nil {
+	if err = InsertDB(db,&st); err != nil {
 		t.Errorf("error was not expected while updating stats: %s", err)
 	}
 }
@@ -52,15 +53,15 @@ func TestDeleteDB(t *testing.T) {
 
 	mock.ExpectExec("DELETE FROM storage WHERE id=$1").WithArgs(st.ID).WillReturnResult(sqlmock.NewResult(1, 1))
 
-	check, err := utils.ConnectDB()
+	conndb, err := utils.ConnectDB()
 
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	defer check.Close()
+	defer conndb.Close()
 
-	if err = DeleteDB(&st); err != nil {
+	if err = DeleteDB(db,&st); err != nil {
 		t.Errorf("error was not expected while updating stats: %s", err)
 	}
 }
@@ -74,13 +75,21 @@ func TestUpdateDB(t *testing.T) {
 	
 	db.Close()
 
+	conndb, err := utils.ConnectDB()
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	defer conndb.Close()
+
 	var st entities.DataUser
 	st.Password="NewPassword"
 	st.Email="Anton@134"
 
 	mock.ExpectExec("UPDATE storage SET password=$1 WHERE email =$2").WithArgs(st.Password,st.Email).WillReturnResult(sqlmock.NewResult(1,1))
 
-	if err = UpdateDB(&st);err!=nil{
+	if err = UpdateDB(db,&st);err!=nil{
 		t.Errorf("error was not expected while updating stats: %s", err)
 	}
 }
@@ -99,14 +108,14 @@ func TestFindUserBy(t *testing.T) {
 
 	mock.ExpectExec("SELECT username,password,email FROM storage WHERE id=$1").WithArgs(st.ID).WillReturnResult(sqlmock.NewResult(1, 1))
 
-	check, err := utils.ConnectDB()
+	conndb, err := utils.ConnectDB()
 
 	if err != nil {
 		log.Fatal(err)
 	}
-	defer check.Close()
+	defer conndb.Close()
 
-	if err = FindUserByID(&st); err != nil {
+	if err = FindUserByID(db,&st); err != nil {
 		t.Errorf("error was not expected while updating stats: %s", err)
 	}
 }

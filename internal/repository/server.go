@@ -3,6 +3,7 @@ package server
 import (
 	"fmt"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"os"
 
@@ -11,13 +12,15 @@ import (
 	"github.com/cmd/internal/database/storage"
 	"github.com/cmd/internal/entities"
 	"github.com/cmd/internal/forms"
+	"github.com/cmd/internal/repository/services"
+	"github.com/cmd/internal/utils"
 	"github.com/pkg/errors"
 )
 
 func PageLogin(w http.ResponseWriter, r *http.Request) {
 
-	if r.URL.Path != "/login/view" {
-			http.Error(w, "Invalid URL Address", http.StatusRequestURITooLong)
+	if r.URL.Path != "page/login" {
+		http.Error(w, "Invalid URL Address", http.StatusRequestURITooLong)
 	}
 
 	file, err := os.Open("./templates/auth/login.html")
@@ -44,7 +47,7 @@ func PageLogin(w http.ResponseWriter, r *http.Request) {
 			Email:    r.FormValue("address"),
 		}
 
-		if forms.IsEmail(datastorage.Email) && forms.IsPassword(datastorage.Password){
+		if forms.IsEmail(datastorage.Email) && forms.IsPassword(datastorage.Password) {
 
 			if usecase.WebsiteAccess(&datastorage) {
 				http.Redirect(w, r, "/welcome/view", http.StatusSeeOther)
@@ -53,7 +56,7 @@ func PageLogin(w http.ResponseWriter, r *http.Request) {
 			}
 
 		} else {
-			fmt.Fprintf(w,"Invalid input data!")
+			fmt.Fprintf(w, "Invalid input data!")
 		}
 
 	default:
@@ -64,7 +67,7 @@ func PageLogin(w http.ResponseWriter, r *http.Request) {
 
 func PageRegistration(w http.ResponseWriter, r *http.Request) {
 
-	if r.URL.Path != "/registration/view" {
+	if r.URL.Path != "page/registration" {
 		http.Error(w, "Invalid URL Address", http.StatusRequestURITooLong)
 	}
 
@@ -96,10 +99,15 @@ func PageRegistration(w http.ResponseWriter, r *http.Request) {
 			forms.IsUsername(datastorage.UserName) {
 
 			if usecase.ExistsUser(&datastorage) {
-				fmt.Fprintf(w,"User with so email exists already")
+				fmt.Fprintf(w, "User with so email exists already")
 			} else {
-				storage.InsertDB(&datastorage)
-				http.Redirect(w,r,"/login/view",http.StatusFound)
+				db, err := utils.ConnectDB()
+				if err != nil {
+					log.Fatal("Failed to connect db ")
+				}
+
+				storage.InsertDB(db, &datastorage)
+				http.Redirect(w, r, "/login/view", http.StatusFound)
 			}
 		} else {
 			http.Error(w, "Login details are incorrect", http.StatusUnauthorized)
@@ -111,7 +119,7 @@ func PageRegistration(w http.ResponseWriter, r *http.Request) {
 
 func PageResetPassword(w http.ResponseWriter, r *http.Request) {
 
-	if r.URL.Path != "/recovery/password" {
+	if r.URL.Path != "page/reset/password" {
 		http.Error(w, "Invalid URL Address", http.StatusRequestURITooLong)
 	}
 
@@ -143,7 +151,7 @@ func PageResetPassword(w http.ResponseWriter, r *http.Request) {
 			if usecase.ExistsUser(&datastorage) {
 				usecase.ChangePassword(&datastorage)
 			} else {
-				fmt.Fprintf(w,"User with so email doesn't exist")
+				fmt.Fprintf(w, "User with so email doesn't exist")
 			}
 		} else {
 			http.Error(w, "Login details are incorrect", http.StatusUnauthorized)
@@ -156,7 +164,7 @@ func PageResetPassword(w http.ResponseWriter, r *http.Request) {
 
 func PageMain(w http.ResponseWriter, r *http.Request) {
 
-	if r.URL.Path != "/welcome/view" {
+	if r.URL.Path != "page/main" {
 		http.Error(w, "Invalid URL Address", http.StatusRequestURITooLong)
 	}
 
@@ -183,8 +191,13 @@ func PageMain(w http.ResponseWriter, r *http.Request) {
 			Note: r.FormValue("note"),
 			ID:   r.FormValue("id"),
 		}
+		db, err := utils.ConnectDB()
 
-		notesdb.InsertNoteDB(&note)
+		if err != nil {
+			return
+		}
+
+		notesdb.InsertNoteDB(db, &note)
 
 	default:
 		http.Redirect(w, r, "/page/error", http.StatusNotFound)
@@ -196,9 +209,14 @@ func ErrorHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Invalid URL Address", http.StatusRequestURITooLong)
 	}
 
+	title := r.URL.Path[len("page/error"):]
+	p, err := services.LoadPage(title)
 
-	// need to end 
-	w.Write([]byte("Error"))
+	if err != nil {
+		p = &entities.Page{Title: title}
+	}
+
+	services.RenderTemplate(w, "./templates/errorpage", p)
 }
 
 func CheckError(err error, msg string) {

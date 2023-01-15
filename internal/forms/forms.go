@@ -4,6 +4,7 @@ import (
 	"github.com/cmd/internal/database"
 	"strings"
 	"unicode"
+	"log"
 )
 
 func IsEmail(email string) bool {
@@ -31,7 +32,12 @@ func IsPassword(password string) bool {
 }
 
 func IsUsername(username string) bool {
-	usern := usecase.GetByUserName()
+	usern,err := usecase.GetByUserName()
+
+	if err!=nil{
+		log.Fatal("Failed to get username")
+	}
+
 	var IsTrue bool
 
 	for _, names := range usern {

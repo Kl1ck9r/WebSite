@@ -41,7 +41,8 @@ func TestConnectDB(t *testing.T) {
 
 	err = db.Ping()
 
-	if err != nil {
-		log.Fatal("Failed to connect to database", err)
+	if db, err := ConnectDB(); err != nil {
+		t.Errorf("Failed to connect database: %v", err)
+		defer db.Close()
 	}
 }

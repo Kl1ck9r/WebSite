@@ -14,8 +14,8 @@ type Notes struct{
 }
 
 type Page struct{
-	Title string 
-	Body []byte
+	Title string  `json:"Title"`
+	Body []byte `json:"Body"`
 }
 
 type Search struct { 
