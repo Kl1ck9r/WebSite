@@ -1,7 +1,6 @@
 package usecase
 
 import (
-	"fmt"
 	"log"
 
 	dbstorage "github.com/cmd/internal/database/storage"
@@ -10,7 +9,6 @@ import (
 	_ "github.com/lib/pq"
 	"github.com/pkg/errors"
 )
-
 
 func WebsiteAccess(ent *entities.DataUser) bool {
 	var IsTrue bool = false
@@ -29,7 +27,7 @@ func WebsiteAccess(ent *entities.DataUser) bool {
 func ExistsUser(ent *entities.DataUser) bool {
 	Db, err := utils.ConnectDB()
 	CheckError(err, "Failed to open db")
-	
+
 	defer Db.Close()
 
 	rows, err := Db.Query("SELECT email FROM storage")
@@ -82,11 +80,11 @@ func ChangePassword(ent *entities.DataUser) (err error) {
 		if rng.Password == ent.Password && rng.Email == ent.Email {
 			log.Fatal("The new password matches the old password")
 		} else {
-			 dbstorage.UpdateDB(Db,&p)
+			dbstorage.UpdateDB(Db, &p)
 		}
 	}
 
-	return 
+	return
 }
 
 func GetDataDB() []entities.DataUser {
@@ -110,14 +108,14 @@ func GetDataDB() []entities.DataUser {
 		storage = append(storage, p)
 	}
 
-	for _, rng := range storage {
-		fmt.Println(rng.UserName, rng.Password, rng.Email)
+	if err = rows.Err(); err != nil {
+		log.Print(err)
 	}
 
 	return storage
 }
 
-func GetByUserName() (sl []string,err error) {
+func GetByUserName() (sl []string, err error) {
 	Db, err := utils.ConnectDB()
 	CheckError(err, "Failed to open request")
 
@@ -135,7 +133,7 @@ func GetByUserName() (sl []string,err error) {
 		username = append(username, names)
 	}
 
-	return username,nil
+	return username, nil
 }
 
 func CheckError(err error, msg string) {

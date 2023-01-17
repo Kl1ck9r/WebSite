@@ -3,13 +3,11 @@ package storage
 import (
 	"database/sql"
 
-	
 	"github.com/cmd/internal/entities"
 	_ "github.com/lib/pq"
 )
 
-
-func InsertDB(db *sql.DB,ent *entities.DataUser) (err error) {
+func InsertDB(db *sql.DB, ent *entities.DataUser) (err error) {
 	tx, err := db.Begin()
 	if err != nil {
 		return
@@ -23,11 +21,11 @@ func InsertDB(db *sql.DB,ent *entities.DataUser) (err error) {
 			tx.Rollback()
 		}
 	}()
-	
+
 	sqlInsert := `INSERT INTO storage (username, password, email) 
     VALUES ($1, $2, $3)`
 
-  	_,err =tx.Exec(sqlInsert, ent.UserName, ent.Password, ent.Email)
+	_, err = tx.Exec(sqlInsert, ent.UserName, ent.Password, ent.Email)
 	CheckDB(err)
 
 	return nil
@@ -73,7 +71,7 @@ func UpdateDB(db *sql.DB, ent *entities.DataUser) (err error) {
 			tx.Rollback()
 		}
 	}()
-	
+
 	sqlUpdate := `UPDATE storage SET password=$1 WHERE email =$2`
 
 	_, err = tx.Exec(sqlUpdate, ent.Password, ent.Email)

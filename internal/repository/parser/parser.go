@@ -9,7 +9,6 @@ import (
 )
 
 func LoadPage(title string) (*entities.Page, error) {
-
 	filename := title + ".html"
 	body, err := ioutil.ReadFile(filename)
 	if err != nil {

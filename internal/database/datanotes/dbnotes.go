@@ -7,6 +7,7 @@ import (
 	"github.com/cmd/internal/utils"
 	_ "github.com/lib/pq"
 	"github.com/pkg/errors"
+	"log"
 )
 
 func InsertNoteDB(db *sql.DB, nt *entities.Notes) (err error) {
@@ -121,10 +122,14 @@ func GetNotes() (sl []entities.Notes, err error) {
 
 	for rows.Next() {
 		p := entities.Notes{}
-		err = rows.Scan(&p.Note,&p.ID)
+		err = rows.Scan(&p.Note, &p.ID)
 		CheckError(err, "Failed to copy of database notesdb")
 
 		notes = append(notes, p)
+	}
+
+	if err = rows.Err(); err != nil {
+		log.Print(err)
 	}
 
 	return notes, nil
