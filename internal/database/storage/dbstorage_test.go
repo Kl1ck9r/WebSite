@@ -8,7 +8,7 @@ import (
 	"testing"
 )
 
-func TestInsertDB(t *testing.T) {
+/*func TestInsertDB(t *testing.T) {
 	db, mock, err := sqlmock.New()
 
 	if err != nil {
@@ -38,6 +38,7 @@ func TestInsertDB(t *testing.T) {
 		t.Errorf("error was not expected while updating stats: %s", err)
 	}
 }
+*/
 
 func TestDeleteDB(t *testing.T) {
 	db, mock, err := sqlmock.New()

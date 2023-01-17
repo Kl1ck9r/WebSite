@@ -31,10 +31,10 @@ func TestInsertNoteDB(t *testing.T) {
 	}
 	defer conndb.Close()
 
-	if err = InsertNoteDB(db,&nt); err != nil {
+	if err = InsertNoteDB(db, &nt); err != nil {
 		t.Errorf("error was not expected while updating stats: %s", err)
 	}
-	
+
 	if err := mock.ExpectationsWereMet(); err != nil {
 		t.Errorf("there were unfulfilled expectations: %s", err)
 	}
@@ -64,7 +64,7 @@ func TestDeleteNoteDB(t *testing.T) {
 
 	defer conndb.Close()
 
-	if err = DeleteNoteDB(db,&nt); err != nil {
+	if err = DeleteNoteDB(db, &nt); err != nil {
 		t.Errorf("error was not expected while updating stats: %s", err)
 	}
 
@@ -97,7 +97,7 @@ func TestUpdateNoteDB(t *testing.T) {
 	mock.ExpectExec("UPDATE notesdb SET password=$1 WHERE email =$2").WithArgs(nt.Note, nt.ID).WillReturnResult(sqlmock.NewResult(1, 1))
 	mock.ExpectCommit()
 
-	if err = UpdateNoteDB(db,&nt); err != nil {
+	if err = UpdateNoteDB(db, &nt); err != nil {
 		t.Errorf("error was not expected while updating stats: %s", err)
 	}
 
@@ -129,7 +129,7 @@ func TestFindRecordByID(t *testing.T) {
 	}
 	defer conndb.Close()
 
-	if err = FindRecordByID(db,&nt); err != nil {
+	if err = FindRecordByID(db, &nt); err != nil {
 		t.Errorf("error was not expected while updating stats: %s", err)
 	}
 

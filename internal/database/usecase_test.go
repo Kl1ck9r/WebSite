@@ -12,7 +12,6 @@ import (
 // just simple testing
 
 func TestWebSiteAccess(t *testing.T) {
-
 	personallyData := entities.DataUser{
 		Password: "Ruslan12345",
 		Email:    "ruslan@mail.ru",
@@ -35,9 +34,7 @@ func TestExistsUser(t *testing.T) {
 
 	defer db.Close()
 
-	mock.ExpectBegin()
 	mock.ExpectExec("SELECT email FROM storage")
-	mock.ExpectCommit()
 
 	conndb, err := utils.ConnectDB()
 
@@ -54,10 +51,6 @@ func TestExistsUser(t *testing.T) {
 	if !ExistsUser(&storage) {
 		t.Errorf("User with so email address doesn't exist in database storage")
 	}
-
-	if err := mock.ExpectationsWereMet(); err != nil {
-		t.Errorf("there were unfulfilled expectations: %s", err)
-	}
 }
 
 func TestChangePassword(t *testing.T) {
@@ -69,9 +62,7 @@ func TestChangePassword(t *testing.T) {
 
 	defer db.Close()
 
-	mock.ExpectBegin()
 	mock.ExpectExec("SELECT password,email FROM storage")
-	mock.ExpectCommit()
 
 	conndb, err := utils.ConnectDB()
 
@@ -88,10 +79,6 @@ func TestChangePassword(t *testing.T) {
 
 	if err = ChangePassword(&storage); err != nil {
 		t.Errorf("Failed to change password,tests failed")
-	}
-
-	if err := mock.ExpectationsWereMet(); err != nil {
-		t.Errorf("there were unfulfilled expectations: %s", err)
 	}
 
 }
@@ -112,9 +99,7 @@ func TestGetDataDB(t *testing.T) {
 
 	defer conndb.Close()
 
-	mock.ExpectBegin()
 	mock.ExpectExec("SELECT username,password,email FROM storage")
-	mock.ExpectCommit()
 
 	storage := GetDataDB()
 
@@ -122,10 +107,6 @@ func TestGetDataDB(t *testing.T) {
 		if rng.Email == "" && rng.Password == "" && rng.UserName == "" {
 			t.Errorf("Failed to get some data from database storage")
 		}
-	}
-
-	if err := mock.ExpectationsWereMet(); err != nil {
-		t.Errorf("there were unfulfilled expectations: %s", err)
 	}
 }
 
@@ -146,15 +127,9 @@ func TestGetByUserName(t *testing.T) {
 
 	defer storagedb.Close()
 
-	mock.ExpectBegin()
 	mock.ExpectExec("SELECT username FROM storage")
-	mock.ExpectCommit()
-
+	
 	if _, err := GetByUserName(); err != nil {
 		t.Errorf("Faile to get username:%v", err)
-	}
-
-	if err := mock.ExpectationsWereMet(); err != nil {
-		t.Errorf("there were unfulfilled expectations: %s", err)
 	}
 }

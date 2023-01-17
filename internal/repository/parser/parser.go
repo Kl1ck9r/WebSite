@@ -1,4 +1,4 @@
-package services
+package  parser
 
 import (
 	"html/template"
@@ -19,7 +19,12 @@ func LoadPage(title string) (*entities.Page, error) {
 	return &entities.Page{Title: title, Body: body}, nil
 }
 
-func RenderTemplate(w http.ResponseWriter, tmpl string, p *entities.Page) {
+func RenderPageTemplate(w http.ResponseWriter, tmpl string, p *entities.Page) {
+	t, _ := template.ParseFiles(tmpl + ".html")
+	t.Execute(w, p)
+}
+
+func RenderNotesTemplate(w http.ResponseWriter, tmpl string, p *entities.Notes) {
 	t, _ := template.ParseFiles(tmpl + ".html")
 	t.Execute(w, p)
 }

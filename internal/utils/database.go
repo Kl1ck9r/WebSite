@@ -17,6 +17,7 @@ func Init() {
 	}
 }
 
+
 func ConnectDB() (*sql.DB, error) {
 
 	psqlConnect := entities.DataBase{
@@ -27,9 +28,11 @@ func ConnectDB() (*sql.DB, error) {
 		Port:     os.Getenv("DB_PORT"),
 		SSLMode:  "disable",
 	}
+	
 
 	db, err := sql.Open("postgres", fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=%s",
 		psqlConnect.Host, psqlConnect.Port, psqlConnect.UserName, psqlConnect.Password, psqlConnect.DBName, psqlConnect.SSLMode))
+
 
 	if err != nil {
 		log.Fatal("Failed to open database",err)

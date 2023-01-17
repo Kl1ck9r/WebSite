@@ -9,10 +9,7 @@ import (
 	"github.com/pkg/errors"
 )
 
-var Db *sql.DB
-
 func InsertNoteDB(db *sql.DB, nt *entities.Notes) (err error) {
-
 	tx, err := db.Begin()
 
 	if err != nil {
@@ -28,20 +25,16 @@ func InsertNoteDB(db *sql.DB, nt *entities.Notes) (err error) {
 		}
 	}()
 
-	Db, err := utils.ConnectDB()
-	CheckError(err, "Failed to open db")
-
 	sqlInsert := `INSERT INTO notesdb(note)
 	VALUES($1,$2)`
 
-	_, err = Db.Exec(sqlInsert, nt.Note, nt.ID)
+	_, err = tx.Exec(sqlInsert, nt.Note, nt.ID)
 	CheckError(err, "Failed to handle request db")
 
 	return
 }
 
 func DeleteNoteDB(db *sql.DB, nt *entities.Notes) (err error) {
-
 	tx, err := db.Begin()
 
 	if err != nil {
@@ -57,19 +50,15 @@ func DeleteNoteDB(db *sql.DB, nt *entities.Notes) (err error) {
 		}
 	}()
 
-	Db, err := utils.ConnectDB()
-	CheckError(err, "Failed to open db")
-
 	sqlDelete := `DELETE FROM notesdb WHERE id_note=$1`
 
-	_, err = Db.Exec(sqlDelete, nt.ID)
+	_, err = tx.Exec(sqlDelete, nt.ID)
 	CheckError(err, "Failed to handle request from db")
 
 	return
 }
 
 func UpdateNoteDB(db *sql.DB, nt *entities.Notes) (err error) {
-
 	tx, err := db.Begin()
 
 	if err != nil {
@@ -85,19 +74,15 @@ func UpdateNoteDB(db *sql.DB, nt *entities.Notes) (err error) {
 		}
 	}()
 
-	Db, err := utils.ConnectDB()
-	CheckError(err, "Failed open db")
-
 	sqlUpdate := `UPDATE notesdb SET note=$1 where id_note=$2 `
 
-	_, err = Db.Exec(sqlUpdate, nt.Note, nt.ID)
+	_, err = tx.Exec(sqlUpdate, nt.Note, nt.ID)
 	CheckError(err, "Failed to handle request from db")
 
 	return
 }
 
 func FindRecordByID(db *sql.DB, ent *entities.Notes) (err error) {
-
 	tx, err := db.Begin()
 
 	if err != nil {
@@ -113,15 +98,36 @@ func FindRecordByID(db *sql.DB, ent *entities.Notes) (err error) {
 		}
 	}()
 
-	Db, err := utils.ConnectDB()
-	CheckError(err, "Failed to open db")
-
 	sqlFind := `SELECT note FROM notesdb WHERE id_note=$1`
 
-	_, err = Db.Exec(sqlFind, ent.ID)
+	_, err = tx.Exec(sqlFind, ent.ID)
 	CheckError(err, "Failed to handle request to db")
 
 	return
+}
+
+func GetNotes() (sl []entities.Notes, err error) {
+	Db, err := utils.ConnectDB()
+	CheckError(err, "Failed to open request")
+
+	defer Db.Close()
+
+	rows, err := Db.Query("SELECT note,id_note FROM notesdb")
+	CheckError(err, "Failed to handle request")
+
+	defer rows.Close()
+
+	notes := []entities.Notes{}
+
+	for rows.Next() {
+		p := entities.Notes{}
+		err = rows.Scan(&p.Note,&p.ID)
+		CheckError(err, "Failed to copy of database notesdb")
+
+		notes = append(notes, p)
+	}
+
+	return notes, nil
 }
 
 func CheckError(err error, msg string) {

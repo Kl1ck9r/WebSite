@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Notes</title>
+    </head>
+    <body>
+        <table>
+            <thead><th>ID</th><th>Note</th></thead>
+            {{range . }}
+            <tr>
+                <td>{{.ID}}</td>
+                <td>{{.Note}}</td>
+            </tr>
+            {{end}}
+        </table>
+    </body>

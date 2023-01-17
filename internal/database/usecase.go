@@ -1,7 +1,6 @@
 package usecase
 
 import (
-	"database/sql"
 	"fmt"
 	"log"
 
@@ -12,7 +11,6 @@ import (
 	"github.com/pkg/errors"
 )
 
-var Db *sql.DB
 
 func WebsiteAccess(ent *entities.DataUser) bool {
 	var IsTrue bool = false

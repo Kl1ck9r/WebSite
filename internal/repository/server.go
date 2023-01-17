@@ -2,8 +2,10 @@ package server
 
 import (
 	"fmt"
+	"html/template"
 	"io/ioutil"
 	"log"
+
 	"net/http"
 	"os"
 
@@ -12,14 +14,14 @@ import (
 	"github.com/cmd/internal/database/storage"
 	"github.com/cmd/internal/entities"
 	"github.com/cmd/internal/forms"
-	"github.com/cmd/internal/repository/services"
+	"github.com/cmd/internal/repository/parser"
 	"github.com/cmd/internal/utils"
 	"github.com/pkg/errors"
 )
 
 func PageLogin(w http.ResponseWriter, r *http.Request) {
 
-	if r.URL.Path != "page/login" {
+	if r.URL.Path != "/page/login" {
 		http.Error(w, "Invalid URL Address", http.StatusRequestURITooLong)
 	}
 
@@ -50,7 +52,7 @@ func PageLogin(w http.ResponseWriter, r *http.Request) {
 		if forms.IsEmail(datastorage.Email) && forms.IsPassword(datastorage.Password) {
 
 			if usecase.WebsiteAccess(&datastorage) {
-				http.Redirect(w, r, "/welcome/view", http.StatusSeeOther)
+				http.Redirect(w, r, "/page/main", http.StatusSeeOther)
 			} else {
 				http.Error(w, "Login details are incorrect", http.StatusUnauthorized)
 			}
@@ -62,12 +64,11 @@ func PageLogin(w http.ResponseWriter, r *http.Request) {
 	default:
 		http.Redirect(w, r, "/page/error", http.StatusNotFound)
 	}
-
 }
 
 func PageRegistration(w http.ResponseWriter, r *http.Request) {
 
-	if r.URL.Path != "page/registration" {
+	if r.URL.Path != "/page/registration" {
 		http.Error(w, "Invalid URL Address", http.StatusRequestURITooLong)
 	}
 
@@ -106,8 +107,11 @@ func PageRegistration(w http.ResponseWriter, r *http.Request) {
 					log.Fatal("Failed to connect db ")
 				}
 
-				storage.InsertDB(db, &datastorage)
-				http.Redirect(w, r, "/login/view", http.StatusFound)
+				if err = storage.InsertDB(db, &datastorage); err != nil {
+					log.Fatal("Failed to insert data user to database storage")
+				}
+
+				http.Redirect(w, r, "/page/login", http.StatusFound)
 			}
 		} else {
 			http.Error(w, "Login details are incorrect", http.StatusUnauthorized)
@@ -119,7 +123,7 @@ func PageRegistration(w http.ResponseWriter, r *http.Request) {
 
 func PageResetPassword(w http.ResponseWriter, r *http.Request) {
 
-	if r.URL.Path != "page/reset/password" {
+	if r.URL.Path != "/page/reset/password" {
 		http.Error(w, "Invalid URL Address", http.StatusRequestURITooLong)
 	}
 
@@ -164,7 +168,7 @@ func PageResetPassword(w http.ResponseWriter, r *http.Request) {
 
 func PageMain(w http.ResponseWriter, r *http.Request) {
 
-	if r.URL.Path != "page/main" {
+	if r.URL.Path != "/page/main" {
 		http.Error(w, "Invalid URL Address", http.StatusRequestURITooLong)
 	}
 
@@ -191,17 +195,29 @@ func PageMain(w http.ResponseWriter, r *http.Request) {
 			Note: r.FormValue("note"),
 			ID:   r.FormValue("id"),
 		}
+
 		db, err := utils.ConnectDB()
+		CheckError(err, "Failed to connect database")
 
-		if err != nil {
-			return
+		if err := notesdb.InsertNoteDB(db, &note); err != nil {
+			log.Print(err)
 		}
-
-		notesdb.InsertNoteDB(db, &note)
 
 	default:
 		http.Redirect(w, r, "/page/error", http.StatusNotFound)
 	}
+}
+
+func ShowNotesHander(w http.ResponseWriter, r *http.Request) {
+	if r.URL.Path != "/page/show/notes" {
+		http.Error(w, "Invalid URL Path", http.StatusRequestURITooLong)
+	}
+
+	notes, err := notesdb.GetNotes()
+	CheckError(err, "Failed to get notes from database notesdb")
+
+	templ, _ := template.ParseFiles("./templates/showNotes.html")
+	templ.Execute(w, notes)
 }
 
 func ErrorHandler(w http.ResponseWriter, r *http.Request) {
@@ -210,13 +226,13 @@ func ErrorHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	title := r.URL.Path[len("page/error"):]
-	p, err := services.LoadPage(title)
+	p, err := parser.LoadPage(title)
 
 	if err != nil {
 		p = &entities.Page{Title: title}
 	}
 
-	services.RenderTemplate(w, "./templates/errorpage", p)
+	parser.RenderPageTemplate(w, "./templates/errorpage", p)
 }
 
 func CheckError(err error, msg string) {

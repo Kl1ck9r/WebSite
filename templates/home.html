@@ -7,14 +7,14 @@
 
 <body>
 	<div class="container">
-        <h1> List affairs </h1>
-        <form method="POST" action="/welcome/view">
+        <h1>Your Personally Notes </h1>
+        <form method="POST" action="/page/main">
             <input class="form-control" type="text" name="note" id ="note" placeholder="Enter note text ">
             <input class="form-control" type="number" name="id" id ="id" placeholder="Enter id note ">
-         
-            <button class="btn-danger" type="submit" name="send"><b>Add</b></button>
+    
+            <button class="btn-danger" type="submit" name="send"><b>Save</b></button>
             <button class="btn-danger" type="submit" name="send"><b>Delete</b></button>
-            <button class="btn-danger" type="button" name="send"><b>Show Notes</b></button>
+            <a href="/page/show/notes"><b>Show Notes</b></a>
         </form>
     </div>
 
@@ -60,6 +60,5 @@ h1 {
 </style>
 
 </html>
-
 
 
