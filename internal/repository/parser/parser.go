@@ -24,7 +24,7 @@ func RenderPageTemplate(w http.ResponseWriter, tmpl string, p *entities.Page) {
 	t.Execute(w, p)
 }
 
-func RenderNotesTemplate(w http.ResponseWriter, tmpl string, p *entities.Notes) {
+func RenderNotesTemplate(w http.ResponseWriter, tmpl string, notes []entities.Notes) {
 	t, _ := template.ParseFiles(tmpl + ".html")
-	t.Execute(w, p)
+	t.Execute(w, notes)
 }

@@ -2,7 +2,6 @@ package server
 
 import (
 	"fmt"
-	"html/template"
 	"io/ioutil"
 	"log"
 
@@ -208,7 +207,7 @@ func PageMain(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func ShowNotesHander(w http.ResponseWriter, r *http.Request) {
+func ShowNotesHandler(w http.ResponseWriter, r *http.Request) {
 	if r.URL.Path != "/page/show/notes" {
 		http.Error(w, "Invalid URL Path", http.StatusRequestURITooLong)
 	}
@@ -216,8 +215,7 @@ func ShowNotesHander(w http.ResponseWriter, r *http.Request) {
 	notes, err := notesdb.GetNotes()
 	CheckError(err, "Failed to get notes from database notesdb")
 
-	templ, _ := template.ParseFiles("./templates/showNotes.html")
-	templ.Execute(w, notes)
+	parser.RenderNotesTemplate(w,"./templates/showNotes",notes)
 }
 
 func ErrorHandler(w http.ResponseWriter, r *http.Request) {

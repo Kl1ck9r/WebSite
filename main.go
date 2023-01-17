@@ -4,13 +4,12 @@ import (
 	"log"
 	"net/http"
 	"time"
-	
+
 	"github.com/cmd/internal/middleware"
 	"github.com/cmd/internal/repository"
 )
 
 func main() {
-
 
 	mux := http.NewServeMux()
 
@@ -22,15 +21,15 @@ func main() {
 
 	mux.HandleFunc("/page/main", server.PageMain)
 
-	mux.HandleFunc("/page/show/notes", server.ShowNotesHander)
+	mux.HandleFunc("/page/show/notes", server.ShowNotesHandler)
 
 	mux.HandleFunc("/page/error", server.ErrorHandler)
 
 	handler := middleware.Logging(mux)
-    handler = middleware.PanicRecovery(handler)
+	handler = middleware.PanicRecovery(handler)
 
 	srv := &http.Server{
-		Handler:        mux,
+		Handler:      handler,
 		Addr:         "127.0.0.1:8080",
 		WriteTimeout: 15 * time.Second,
 		ReadTimeout:  15 * time.Second,

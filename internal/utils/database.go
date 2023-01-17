@@ -4,9 +4,9 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
-	"os"
+	//"os"
 
-	"github.com/cmd/internal/entities"
+	//"github.com/cmd/internal/entities"
 	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
 )
@@ -17,10 +17,17 @@ func Init() {
 	}
 }
 
+const (
+	host     = "localhost"
+	port     = 5432
+	user     = "postgres"
+	password = "Ruslan5655"
+	dbname   = "postgres"
+)
 
 func ConnectDB() (*sql.DB, error) {
 
-	psqlConnect := entities.DataBase{
+	/*psqlConnect := entities.DataBase{
 		Host:     os.Getenv("DB_HOST"),
 		Password: os.Getenv("DB_PASSWORD"),
 		UserName: os.Getenv("DB_NAME"),
@@ -32,6 +39,15 @@ func ConnectDB() (*sql.DB, error) {
 
 	db, err := sql.Open("postgres", fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=%s",
 		psqlConnect.Host, psqlConnect.Port, psqlConnect.UserName, psqlConnect.Password, psqlConnect.DBName, psqlConnect.SSLMode))
+*/
+
+  
+  	psqlInfo := fmt.Sprintf("host=%s port=%d user=%s "+
+    "password=%s dbname=%s sslmode=disable",
+   host, port, user, password, dbname)
+
+	db, err := sql.Open("postgres", psqlInfo)
+	
 
 
 	if err != nil {
