@@ -20,10 +20,6 @@ import (
 
 func PageLogin(w http.ResponseWriter, r *http.Request) {
 
-	if r.URL.Path != "/page/login" {
-		http.Error(w, "Invalid URL Address", http.StatusRequestURITooLong)
-	}
-
 	file, err := os.Open("./templates/auth/login.html")
 	CheckError(err, "Failed to open file")
 
@@ -66,10 +62,6 @@ func PageLogin(w http.ResponseWriter, r *http.Request) {
 }
 
 func PageRegistration(w http.ResponseWriter, r *http.Request) {
-
-	if r.URL.Path != "/page/registration" {
-		http.Error(w, "Invalid URL Address", http.StatusRequestURITooLong)
-	}
 
 	fl, err := os.Open("./templates/auth/signup.html")
 	CheckError(err, "Failed to open file")
@@ -122,10 +114,6 @@ func PageRegistration(w http.ResponseWriter, r *http.Request) {
 
 func PageResetPassword(w http.ResponseWriter, r *http.Request) {
 
-	if r.URL.Path != "/page/reset/password" {
-		http.Error(w, "Invalid URL Address", http.StatusRequestURITooLong)
-	}
-
 	fl, err := os.Open("./templates/recovery.html")
 	CheckError(err, "Failed to open file")
 
@@ -167,10 +155,6 @@ func PageResetPassword(w http.ResponseWriter, r *http.Request) {
 
 func PageMain(w http.ResponseWriter, r *http.Request) {
 
-	if r.URL.Path != "/page/main" {
-		http.Error(w, "Invalid URL Address", http.StatusRequestURITooLong)
-	}
-
 	fl, err := os.Open("./templates/home.html")
 	CheckError(err, "Failed to open db")
 
@@ -208,10 +192,6 @@ func PageMain(w http.ResponseWriter, r *http.Request) {
 }
 
 func ShowNotesHandler(w http.ResponseWriter, r *http.Request) {
-	if r.URL.Path != "/page/show/notes" {
-		http.Error(w, "Invalid URL Path", http.StatusRequestURITooLong)
-	}
-
 	notes, err := notesdb.GetNotes()
 	CheckError(err, "Failed to get notes from database notesdb")
 
@@ -219,9 +199,6 @@ func ShowNotesHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func ErrorHandler(w http.ResponseWriter, r *http.Request) {
-	if r.URL.Path != "/page/error" {
-		http.Error(w, "Invalid URL Address", http.StatusRequestURITooLong)
-	}
 
 	title := r.URL.Path[len("page/error"):]
 	p, err := parser.LoadPage(title)

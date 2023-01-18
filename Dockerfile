@@ -1,6 +1,6 @@
 FROM golang:latest 
 
-WORKDIR /webApp
+WORKDIR /WebApplication
 
 COPY go.mod ./
 COPY go.sum ./
@@ -8,8 +8,6 @@ COPY go.sum ./
 RUN go mod download 
 
 COPY *.go ./internal  ./ 
-
-RUN go build -o /web-application-golang
 
 EXPOSE 8080
 
