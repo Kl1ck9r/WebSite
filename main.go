@@ -13,7 +13,7 @@ func main() {
 
 	mux := http.NewServeMux()
 
-	mux.HandleFunc("/page/registration", server.PageRegistration)
+	mux.HandleFunc("/page/signup", server.PageRegistration)
 
 	mux.HandleFunc("/page/login", server.PageLogin)
 
