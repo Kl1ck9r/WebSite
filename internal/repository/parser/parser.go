@@ -11,6 +11,7 @@ import (
 func LoadPage(title string) (*entities.Page, error) {
 	filename := title + ".html"
 	body, err := ioutil.ReadFile(filename)
+	
 	if err != nil {
 		return nil, err
 	}
@@ -20,10 +21,18 @@ func LoadPage(title string) (*entities.Page, error) {
 
 func RenderPageTemplate(w http.ResponseWriter, tmpl string, p *entities.Page) {
 	t, _ := template.ParseFiles(tmpl + ".html")
-	t.Execute(w, p)
+	err:=t.Execute(w, p)
+	
+	if err != nil {
+        http.Error(w, err.Error(), http.StatusInternalServerError)
+    }
 }
 
 func RenderNotesTemplate(w http.ResponseWriter, tmpl string, notes []entities.Notes) {
 	t, _ := template.ParseFiles(tmpl + ".html")
-	t.Execute(w, notes)
+	err:=t.Execute(w, notes)
+
+	if err != nil {
+        http.Error(w, err.Error(), http.StatusInternalServerError)
+    }
 }

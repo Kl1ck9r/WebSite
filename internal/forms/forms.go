@@ -2,9 +2,10 @@ package forms
 
 import (
 	"github.com/cmd/internal/database"
+	"github.com/cmd/internal/database/datanotes"
+	"log"
 	"strings"
 	"unicode"
-	"log"
 )
 
 func IsEmail(email string) bool {
@@ -32,9 +33,9 @@ func IsPassword(password string) bool {
 }
 
 func IsUsername(username string) bool {
-	usern,err := usecase.GetByUserName()
+	usern, err := usecase.GetByUserName()
 
-	if err!=nil{
+	if err != nil {
 		log.Fatal("Failed to get username")
 	}
 
@@ -48,5 +49,29 @@ func IsUsername(username string) bool {
 		}
 	}
 
+	return IsTrue
+}
+
+func IsID(id string) bool {
+	notes, err := notesdb.GetNotes()
+
+	if err != nil {
+		log.Print(err)
+	}
+
+	noteID := []string{}
+
+	for _, nt := range notes {
+		noteID = append(noteID, nt.ID)
+	}
+
+	var IsTrue bool = false
+
+	for _, i := range noteID {
+		if i == id {
+			IsTrue = true
+		}
+	}
+	
 	return IsTrue
 }

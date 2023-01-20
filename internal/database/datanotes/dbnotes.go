@@ -3,11 +3,13 @@ package notesdb
 import (
 	"database/sql"
 
+	"log"
+
 	"github.com/cmd/internal/entities"
+	"github.com/cmd/internal/forms"
 	"github.com/cmd/internal/utils"
 	_ "github.com/lib/pq"
 	"github.com/pkg/errors"
-	"log"
 )
 
 func InsertNoteDB(db *sql.DB, nt *entities.Notes) (err error) {
@@ -99,10 +101,14 @@ func FindRecordByID(db *sql.DB, ent *entities.Notes) (err error) {
 		}
 	}()
 
-	sqlFind := `SELECT note FROM notesdb WHERE id_note=$1`
+	if forms.IsID(ent.ID) {
+		sqlFind := `SELECT note FROM notesdb WHERE id_note=$1`
 
-	_, err = tx.Exec(sqlFind, ent.ID)
-	CheckError(err, "Failed to handle request to db")
+		_, err = tx.Exec(sqlFind, ent.ID)
+		CheckError(err, "Failed to handle request to db")
+	} else {
+		log.Print("Failed to delete note,because id doesn't exists")
+	}
 
 	return
 }

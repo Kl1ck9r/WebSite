@@ -22,6 +22,8 @@ func main() {
 	mux.HandleFunc("/page/main", server.PageMain)
 
 	mux.HandleFunc("/page/show/notes", server.ShowNotesHandler)
+	
+	mux.HandleFunc("/page/delete/note",server.DeleteNotesHandler)
 
 	mux.HandleFunc("/page/error", server.ErrorHandler)
 

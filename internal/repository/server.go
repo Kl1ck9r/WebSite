@@ -195,7 +195,35 @@ func ShowNotesHandler(w http.ResponseWriter, r *http.Request) {
 	notes, err := notesdb.GetNotes()
 	CheckError(err, "Failed to get notes from database notesdb")
 
-	parser.RenderNotesTemplate(w,"./templates/showNotes",notes)
+	parser.RenderNotesTemplate(w, "./templates/showNotes", notes)
+}
+
+func DeleteNotesHandler(w http.ResponseWriter, r *http.Request) {
+	file, err := os.Open("./templates/deleteNote.html")
+	CheckError(err, "Failed to open file")
+
+	defer file.Close()
+
+	read, err := ioutil.ReadAll(file)
+	CheckError(err, "Failed to read of the html file")
+
+	switch r.Method {
+	case "GET":
+		w.Write(read)
+
+	case "POST":
+		db, err := utils.ConnectDB()
+		CheckError(err, "Failed to connect database")
+
+	
+		noteID := entities.Notes{
+			ID: r.FormValue("deleteNote"),
+		}
+		notesdb.DeleteNoteDB(db, &noteID)
+
+	default:
+		http.Redirect(w, r, "/page/error", http.StatusNotFound)
+	}
 }
 
 func ErrorHandler(w http.ResponseWriter, r *http.Request) {
