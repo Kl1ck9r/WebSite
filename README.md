@@ -13,3 +13,10 @@ Endpoint | Usage
 /page/error        | Page in case of an error
 /page/show/notes    |  Page displaying user record saving
 /page/delete/note  | Page to delete note 
+
+
+# Requirements
+
+Go - from v1.19
+
+PostgreSQL - from v10
