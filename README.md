@@ -20,3 +20,23 @@ Endpoint | Usage
 Go - from v1.19
 
 PostgreSQL - from v10
+
+
+# Setup
+- Before setup, you must have PostgreSQL on your machine. Then clone this repository
+
+    > https://github.com/Kl1ck9r/WebSite.git
+
+- cd into the project directory
+
+   > cd Web-Site-Go
+
+- Set environment variables
+
+  - A sample is presented in the repository.
+  
+  > cp .env
+
+- Run application
+
+  > go run main.go
