@@ -2,13 +2,13 @@ FROM golang:latest
 
 WORKDIR /WebApplication
 
-COPY go.mod ./
-COPY go.sum ./
+COPY go.mod ./WebApplication
+COPY go.sum ./WebApplication
 
 RUN go mod download 
 
-COPY *.go ./internal  ./ 
+COPY . ./WebApplication
 
 EXPOSE 8080
 
-CMD [ "/web-application-golang" ]
+CMD [ "./cmd/main.go" ]
