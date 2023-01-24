@@ -19,7 +19,7 @@ Endpoint | Usage
 
 Go - from v1.19
 
-PostgreSQL - from v10
+PostgreSQL - from v15
 
 
 # Setup
