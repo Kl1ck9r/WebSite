@@ -1,0 +1,29 @@
+version: "3.8"
+
+services:
+
+  app:
+    build:
+    context: .
+    dockerile: Dockerfile
+    env_file: .env
+    dependes_on:
+      - database
+    command: ./cmd/main.go
+    ports:
+      - "8080:8080"
+    volumes:
+     - ".:/app"
+  
+
+  database:
+  image: postgres:alpine
+  restart: always
+  env_file: .env
+  ports:
+    - "5432:5432"
+  volumes:
+    - data: /postgres/sql/data
+
+volumes:
+  data:
