@@ -195,7 +195,7 @@ func ShowNotesHandler(w http.ResponseWriter, r *http.Request) {
 	notes, err := notesdb.GetNotes()
 	CheckError(err, "Failed to get notes from database notesdb")
 
-	parser.RenderNotesTemplate(w, "./templates/showNotes", notes)
+	parser.RenderTemplate(w, "./templates/showNotes", notes)
 }
 
 func DeleteNotesHandler(w http.ResponseWriter, r *http.Request) {
@@ -235,7 +235,7 @@ func ErrorHandler(w http.ResponseWriter, r *http.Request) {
 		p = &entities.Page{Title: title}
 	}
 
-	parser.RenderPageTemplate(w, "./templates/errorpage", p)
+	parser.RenderTemplate(w, "./templates/errorpage", p)
 }
 
 func CheckError(err error, msg string) {
